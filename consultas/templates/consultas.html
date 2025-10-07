@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'body' %}
+    <header class="absolute inset-x-0 top-0 z-50 flex h-16 border-b border-gray-900/10">
+        <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-1 items-center gap-x-6">
+                <a href="{% url 'pacientes' %}"><img src="{% static 'logo.png' %}" alt="PsiQuê" class="h-12 w-auto" /></a>
+            </div>
+            <nav class="hidden md:flex md:gap-x-11 md:text-sm/6 md:font-semibold md:text-gray-700">
+                <a href="#">Consultas</a>
+                <a href="#">Usuários</a>
+            </nav>
+            <div class="flex flex-1 items-center justify-end gap-x-8">
+                <a href="#" class="-m-1.5 p-1.5">
+                    <span class="sr-only">Seu perfil</span>
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                         alt=""
+                         class="size-8 rounded-full bg-gray-100 outline -outline-offset-1 outline-black/5" />
+                </a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <header class="relative isolate pt-16">
+            <div aria-hidden="true" class="absolute inset-0 -z-10 overflow-hidden">
+                <div class="absolute top-full left-16 -mt-16 transform-gpu opacity-50 blur-3xl xl:left-1/2 xl:-ml-80">
+                    <div style="clip-path: polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)"
+                         class="aspect-1154/678 w-288.5 bg-linear-to-br from-[#FF80B5] to-[#9089FC]"></div>
+                </div>
+                <div class="absolute inset-x-0 bottom-0 h-px bg-gray-900/5"></div>
+            </div>
+            <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+                <div class="mx-auto flex max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none">
+                    <div class="flex items-center gap-x-6">
+                        <img class="object-cover w-full rounded-t-lg h-18 md:h-auto md:w-18 md:rounded-none md:rounded-s-lg"
+                             src="{{ paciente.foto.url }}"
+                             alt="">
+                        <p class="text-2xl font-bold">{{ paciente.nome }}</p>
+                    </div>
+                    <a href="#"
+                       class="ml-auto flex items-center gap-x-1 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke-width="1.5"
+                             stroke="currentColor"
+                             class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                        </svg>
+                        Chat
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+            <div class="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                <div class="lg:col-start-3 lg:row-end-1 overflow-auto">
+                    <div class="rounded-lg p-6 bg-gray-50 shadow-xs outline-1 outline-gray-900/5">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead>
+                                <tr>
+                                    <th scope="col"
+                                        class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-3">
+                                        Gravação
+                                    </th>
+                                    <th scope="col"
+                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Data</th>
+                                    <th scope="col"
+                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Transcricao
+                                    </th>
+                                    <th scope="col"
+                                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Resumo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+<!-- listar o html-->
+{% for gravacao in gravacoes %}
+<tr class="even:bg-gray-50">
+    <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">
+        <a href="">{{ gravacao.video.name }}</a>
+    </td>
+    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ gravacao.data }}</td>
+    <td class="px-3 py-4 text-sm whitespace-nowrap">
+        {% if gravacao.transcricao %}
+            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-green-800 text-xs font-medium">
+                ✅
+            </span>
+        {% else %}
+            <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-800 text-xs font-medium">X</span>
+        {% endif %}
+    </td>
+    <td class="px-3 py-4 text-sm whitespace-nowrap">
+        {% if gravacao.resumo %}
+            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-green-800 text-xs font-medium">
+                ✅
+            </span>
+        {% else %}
+            <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-800 text-xs font-medium">X</span>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+                                    <tr class="even:bg-gray-50">
+                                        <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">
+                                            <a href="#">Gravação 1</a>
+                                        </td>
+                                        <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">Data</td>
+                                        <td class="px-3 py-4 text-sm whitespace-nowrap">
+                                             ✅  
+                                        </td>
+                                        <td class="px-3 py-4 text-sm whitespace-nowrap">
+                                            ✅
+                                        </td>
+                                    </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Invoice -->
+                <div class="-mx-4 px-4 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16  xl:pb-20">
+                    <div>
+                        <form action="{% url 'consultas' paciente.id %}" method="POST" enctype='multipart/form-data'>
+                            <label class="block text-sm/6 font-medium text-gray-900">Gravação</label>
+                            <input type="file"
+                                   name="gravacao"
+                                   class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-sm/6 font-medium text-gray-900">Data</label>
+                            <input type="date"
+                                   name="data"
+                                   class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        </div>
+                        <div class="mt-6 space-y-6">
+                            <div class="flex gap-3">
+                                <div class="flex h-6 shrink-0 items-center">
+                                    <div class="group grid size-4 grid-cols-1">
+                                        <input id="transcript"
+                                               type="checkbox"
+                                               name="transcript"
+                                               checked
+                                               aria-describedby="comments-description"
+                                               class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
+                                        <svg viewBox="0 0 14 14"
+                                             fill="none"
+                                             class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25">
+                                            <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                                            <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="text-sm/6">
+                                    <label for="comments" class="font-medium text-gray-900">Transcrever</label>
+                                    <p id="comments-description" class="text-gray-500">
+                                        Ao marcar essa opção os dados serão usados para treinamendo da IA.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit"
+                                        class="inline-flex cursor-pointer items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    Adicionar gravação
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+
+    {% endblock 'body' %}
