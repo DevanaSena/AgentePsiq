@@ -37,7 +37,7 @@
                              alt="">
                         <p class="text-2xl font-bold">{{ paciente.nome }}</p>
                     </div>
-                    <a href="#"
+                    <a href="{% url 'chat' paciente.id %}"
                        class="ml-auto flex items-center gap-x-1 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              fill="none"
@@ -74,54 +74,40 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white">
-<!-- listar o html-->
-{% for gravacao in gravacoes %}
-<tr class="even:bg-gray-50">
-    <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">
-        <a href="">{{ gravacao.video.name }}</a>
-    </td>
-    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ gravacao.data }}</td>
-    <td class="px-3 py-4 text-sm whitespace-nowrap">
-        {% if gravacao.transcricao %}
-            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-green-800 text-xs font-medium">
-                ✅
-            </span>
-        {% else %}
-            <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-800 text-xs font-medium">X</span>
-        {% endif %}
-    </td>
-    <td class="px-3 py-4 text-sm whitespace-nowrap">
-        {% if gravacao.resumo %}
-            <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-green-800 text-xs font-medium">
-                ✅
-            </span>
-        {% else %}
-            <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-800 text-xs font-medium">X</span>
-        {% endif %}
-    </td>
-</tr>
-{% endfor %}
+                                {% for gravacao in gravacoes %}
                                     <tr class="even:bg-gray-50">
                                         <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">
-                                            <a href="#">Gravação 1</a>
+                                            <a href="{% url 'gravacao' gravacao.id %}">{{ gravacao.video.name }}</a>
                                         </td>
-                                        <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">Data</td>
+                                        <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ gravacao.data }}</td>
                                         <td class="px-3 py-4 text-sm whitespace-nowrap">
-                                             ✅  
+                                            {% if gravacao.transcricao %}
+                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-green-800 text-xs font-medium">
+                                                    ✅
+                                                </span>
+                                            {% else %}
+                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-800 text-xs font-medium">X</span>
+                                            {% endif %}
                                         </td>
                                         <td class="px-3 py-4 text-sm whitespace-nowrap">
-                                            ✅
+                                            {% if gravacao.resumo %}
+                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-green-800 text-xs font-medium">
+                                                    ✅
+                                                </span>
+                                            {% else %}
+                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-red-800 text-xs font-medium">X</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
-                                
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <!-- Invoice -->
                 <div class="-mx-4 px-4 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16  xl:pb-20">
                     <div>
-                        <form action="{% url 'consultas' paciente.id %}" method="POST" enctype='multipart/form-data'>
+                       <form action="{% url 'consultas' paciente.id %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
+
                             <label class="block text-sm/6 font-medium text-gray-900">Gravação</label>
                             <input type="file"
                                    name="gravacao"

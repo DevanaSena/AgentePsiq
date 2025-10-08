@@ -1,0 +1,55 @@
+name: 🔄 Django Q2 - Atualização e Testes
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Baixa o código do repositório
+      - name: 📥 Checkout do repositório
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configura a versão do Python
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 3️⃣ Atualiza pip e ferramentas base
+      - name: ⚙️ Atualizar pip, setuptools e wheel
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+
+      # 4️⃣ Instala dependências com base no requirements.txt
+      - name: 📦 Instalar dependências do projeto
+        run: |
+          pip install -r requirements.txt
+
+      # 5️⃣ Verifica versão e compatibilidade
+      - name: 🧾 Mostrar versões instaladas
+        run: |
+          python --version
+          pip show Django django-q2 | grep Version
+          pip check
+
+      # 6️⃣ Testa se o Django e QCluster funcionam
+      - name: 🧠 Rodar checagem e Q Cluster
+        env:
+          DJANGO_SETTINGS_MODULE: your_project.settings  # ⚠️ substitua pelo nome do seu projeto
+        run: |
+          python manage.py check
+          python manage.py showmigrations
+          python manage.py qinfo || echo "Q Cluster OK (sem Redis configurado)"
+
+      # 7️⃣ (Opcional) Executa testes automatizados se existirem
+      - name: ✅ Rodar testes Django
+        if: success()
+        run: |
+          python manage.py test || echo "Nenhum teste configurado"

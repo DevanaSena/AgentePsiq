@@ -16,7 +16,7 @@ python3 -m venv venv
 # Ativar ambiente
 
 # Linux/Mac:
-source venv/bin/activate 
+source venv/bin/activate
 # Windows:
 venv\\Scripts\\activate
 
@@ -29,6 +29,8 @@ pip install --upgrade pip
 
 ```bash
 # Criar migrações para gerar Banco de Dados
+pip install django
+
 python manage.py makemigrations
 python3 manage.py makemigrations
 
