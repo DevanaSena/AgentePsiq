@@ -13,6 +13,14 @@ python -m venv venv
 python -m venv venv
 python3 -m venv venv
 
+sudo apt update && sudo apt install python3.12 python3.12-venv python3.12-dev
+python3.12 --version
+
+pip install --upgrade Django django-q2
+
+pip install --upgrade --dry-run -r requirements.txt
+
+
 # Ativar ambiente
 
 # Linux/Mac:
