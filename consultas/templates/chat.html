@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'body' %}
+    <main>
+        <header class="relative isolate bg-indigo-200/80">
+            <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+                <div class="mx-auto flex max-w-2xl items-center justify-between gap-x-8 lg:mx-0 lg:max-w-none">
+                    <div class="flex items-center gap-x-6">
+                        <a href="{% url 'consultas' paciente.id  %}"><img src="{{ paciente.foto.url }}" alt="" class="w-10 rounded-md"></a>
+                        <h1>
+                            <div class="mt-1 text-base font-semibold text-gray-900">Ana</div>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="px-4 md:px-0">
+            <div class="mx-auto bg-slate-50 mt-8 max-w-4xl px-4 py-16 sm:px-6 lg:px-8 border border-slate-200/60 rounded-md">
+                <!-- Container principal empilhando tudo -->
+                <div class="flex flex-col gap-6" id="chat">
+                    <!-- Mensagem do assistente -->
+                    <div class="flex items-start gap-2.5">
+                        <img class="w-12 h-12 rounded-full"
+                             src="{% static 'assistente_virtual.png' %}">
+                        <div class="flex flex-col gap-1 w-full max-w-[320px]">
+                            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                                <span class="text-sm font-semibold text-gray-900">PsiQuete</span>
+                                <span class="text-sm font-normal text-gray-500">11:46</span>
+                            </div>
+                            <div class="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-200 rounded-e-xl rounded-es-xl">
+                                <p class="text-sm font-normal py-2.5 text-gray-900">Olá, eu sou sua assistente virtual. Como posso ajudar?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="px-4 md:px-0">
+            <div class="mx-auto bg-slate-50 mt-6 max-w-4xl px-4 py-4 sm:px-6 lg:px-8 border border-slate-200/60 rounded-md">
+                <form id="form-pergunta">
+                    <div class="flex items-center gap-4">
+                        <input type="text"
+                               name="pergunta"
+                               id="pergunta"
+                               placeholder="Digite sua pergunta..."
+                               class="flex-1 border border-slate-300 rounded-md px-4 py-2 text-sm text-gray-800 bg-white">
+                        <button type="submit"
+                                class="rounded-md cursor-pointer bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Enviar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.getElementById('form-pergunta').addEventListener('submit', async function(event){
+            event.preventDefault();
+            const pergunta = document.getElementById('pergunta').value
+            const formData = new FormData();
+            formData.append('pergunta', pergunta)
+            const response = await fetch("{% url 'chat' paciente.id %}", {
+                method: "POST",
+                body: formData
+            })
+            const data = await response.json()
+            const perguntaId = data.id
+
+            const novaMensagem1 = document.createElement("div");
+            novaMensagem1.className = "flex items-start gap-2.5 justify-end";
+            novaMensagem1.innerHTML = `
+                <div class="flex flex-col gap-1 w-full max-w-[320px] text-right">
+                    <div class="flex items-center justify-end space-x-2 rtl:space-x-reverse">
+                    <span class="text-sm font-normal text-gray-500">11:46</span>
+                    <span class="text-sm font-semibold text-gray-900">Você</span>
+                    </div>
+                        <div class="flex flex-col leading-1.5 p-4 bg-indigo-200 text-gray-900 rounded-s-xl rounded-ee-xl">
+                        <p class="text-sm font-normal py-2.5">
+                            ${pergunta}
+                        </p>
+                    </div>
+                </div>`;
+
+            document.getElementById("chat").appendChild(novaMensagem1);
+            
+            const novaMensagem = document.createElement("div");
+            novaMensagem.className = "flex items-start gap-2.5";
+           
+            novaMensagem.innerHTML = `
+                <img class="w-12 h-12 rounded-full" src="{% static 'assistente_virtual.png' %}" alt="Pythonete">
+                <div class="flex flex-col gap-1 w-full max-w-[320px]">
+                    <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                        <span class="text-sm font-semibold text-gray-900">PsiQuete</span>
+                        <span class="text-sm font-normal text-gray-500">10:00</span>
+                    </div>
+                    <div class="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-200 rounded-e-xl rounded-es-xl">
+                        <p id="resposta-pythonete-${perguntaId}" class="text-sm font-normal py-2.5 text-gray-900"></p>
+                    </div>
+                   <a href="/consultas/ver_referencias/${perguntaId}" class="text-sm font-normal text-gray-500 dark:text-gray-400">Confira as fontes</a>
+                </div>
+            `;
+
+            document.getElementById("chat").appendChild(novaMensagem);
+            
+            const streamResponse = await fetch("{% url 'stream_response' paciente.id %}",{
+                method: "POST",
+                headers: {
+                     "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({id_pergunta: perguntaId})
+            });
+            
+            const reader = streamResponse.body.getReader()
+            const decoder = new TextDecoder("utf-8")
+            const respostaElemento = document.getElementById(`resposta-pythonete-${perguntaId}`)
+
+            while (true){
+                const {done, value} = await reader.read()
+                if (done) break;
+                
+                const chunk = decoder.decode(value, { stream: true})
+                respostaElemento.innerText += chunk
+
+            }
+        })
+        
+    </script>
+{% endblock 'body' %}
