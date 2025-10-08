@@ -7,7 +7,6 @@
 
 # Linux
 python3.12 -m venv venv
-python -m venv venv
 
 # Windows:
 python -m venv venv
@@ -51,6 +50,13 @@ python3 manage.py migrate
 
 python manage.py createsuperuser
 python3 manage.py createsuperuser
+
+# usuarios teste
+# paula para Windows
+senha paulaWindows
+# devana para Mac 
+senha devanaMac
+
 
 
 ```
